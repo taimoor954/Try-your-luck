@@ -13,8 +13,6 @@ beforeEach(async () => {
   lottery = await new web3.eth.Contract(JSON.parse(interface))
     .deploy({ data: bytecode })
     .send({ from: accounts[0], gas: "1000000" });
-  console.log(accounts, "Accounts");
-  console.log(lottery, "Lottery");
 });
 
 describe("Lottery", () => {
@@ -32,5 +30,36 @@ describe("Lottery", () => {
 
     assert.equal(accounts[0], players[0]);
     assert.equal(1, players.length); //1st agr means iskay baraber honi chaiya value, 2nd arg shows value
-  }); 
+  });
+
+  it("allows multiple account to enter", async () => {
+    await lottery.methods
+      .enter()
+      .send({ from: accounts[0], value: web3.utils.toWei("0.02", "ether") }); //convert ether to wei using web3 util value represent money to be sent when calling   method
+    await lottery.methods
+      .enter()
+      .send({ from: accounts[1], value: web3.utils.toWei("0.02", "ether") }); //convert ether to wei using web3 util value represent money to be sent when calling   method
+    await lottery.methods
+      .enter()
+      .send({ from: accounts[2], value: web3.utils.toWei("0.02", "ether") }); //convert ether to wei using web3 util value represent money to be sent when calling   method
+
+    const players = await lottery.methods
+      .getPlayers()
+      .call({ from: accounts[0] });
+
+    assert.equal(accounts[0], players[0]);
+    assert.equal(accounts[1], players[1]);
+    assert.equal(accounts[2], players[2]);
+
+    assert.equal(3, players.length); //1st agr means iskay baraber honi chaiya value, 2nd arg shows value
+  });
+
+  it("requires minimum amount of ether to enter", async () => {
+    try {
+      await lottery.methods.enter().send({ from: accounts[0], value: 0 });
+      assert(false)
+    } catch (error) {
+        assert(error)
+    }
+  });
 });
