@@ -46,6 +46,7 @@ describe("Lottery", () => {
     const players = await lottery.methods
       .getPlayers()
       .call({ from: accounts[0] });
+    console.log(players);
 
     assert.equal(accounts[0], players[0]);
     assert.equal(accounts[1], players[1]);
@@ -57,9 +58,54 @@ describe("Lottery", () => {
   it("requires minimum amount of ether to enter", async () => {
     try {
       await lottery.methods.enter().send({ from: accounts[0], value: 0 });
-      assert(false)
+      assert(false);
     } catch (error) {
-        assert(error)
+      assert(error);
     }
+  });
+
+  it("Only manager can call pick winner", async () => {
+    try {
+      await lottery.methods.pickWinner().send({ from: accounts[1] });
+      assert(false); //means automatically fails the test no matter what
+    } catch (error) {
+      assert(error);
+    }
+  });
+
+  it("test enitire contract from start to finsih", async () => {
+    await lottery.methods
+      .enter()
+      .send({ from: accounts[0], value: web3.utils.toWei("2", "ether") });
+    const initialBalance = await web3.eth.getBalance(accounts[0]); //get inital balance
+    await lottery.methods.pickWinner().send({ from: accounts[0] });
+    const finalBalance = await web3.eth.getBalance(accounts[0]);
+    const diffrence = finalBalance - initialBalance;
+    // console.log(diffrence);
+    assert(diffrence > web3.utils.toWei("1.8", "ether"));
+  });
+
+  it("should empty the players array once the contract picked the winner", async () => {
+    //players enter
+    await lottery.methods
+      .enter()
+      .send({ from: accounts[1], value: web3.utils.toWei("0.02", "ether") }); //convert ether to wei using web3 util value represent money to be sent when calling   method
+    await lottery.methods
+      .enter()
+      .send({ from: accounts[2], value: web3.utils.toWei("0.02", "ether") }); //convert ether to wei using web3 util value represent money to be sent when calling   method
+
+    //winner picked
+    await lottery.methods.pickWinner().send({ from: accounts[0] });
+
+    //get players array
+    const players = await lottery.methods
+      .getPlayers()
+      .call({ from: accounts[0] });
+
+    assert.equal(0, players.length);
+
+    //after pickwinner contract balance should be 0
+    const contractBalance = await web3.eth.getBalance(lottery.options.address);
+    assert.equal(0, contractBalance);
   });
 });

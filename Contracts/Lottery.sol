@@ -8,11 +8,8 @@ contract Lottery {
         manager = msg.sender; //msg is a global objevt,  see gameInst.txt for detail.
     }
 
-    function enter()
-        public
-        payable
     //when we expect to recive some ether when calling function we make it payable
-    {
+    function enter() public payable {
         require(msg.value > .01 ether); //if requires return false then function willl be exited without changes other wise it can access function use for validation
         players.push(msg.sender);
     }
@@ -32,10 +29,11 @@ contract Lottery {
     function pickWinner() public onlyManagerCanCall {
         uint256 index = random() % players.length;
         players[index].transfer(address(this).balance);
-        players = new address[](0); //(0) shows we initalize array with inital size of 0
-        //transfer method is used by address dt to transfer money
         // this points the current contratct instacne
         //balance tells the money, this contract contains
+        //transfer method is used by address dt to transfer money
+
+        players = new address[](0); //(0) shows we initalize array with inital size of 0
         //empty array when game is finished
     }
 
