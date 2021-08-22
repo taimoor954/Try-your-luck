@@ -5,6 +5,6 @@ const solc = require("solc");
 const lotteryPath = path.resolve(__dirname, "Contracts", "Lottery.sol");
 const source = fs.readFileSync(lotteryPath, "utf-8");
 
-console.log(lotteryPath)
+// console.log(lotteryPath)
 
 module.exports =  solc.compile(source, 1).contracts[':Lottery']; //contract name, number of contract to deploy

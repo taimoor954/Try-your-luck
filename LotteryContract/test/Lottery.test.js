@@ -85,7 +85,7 @@ describe("Lottery", () => {
     assert(diffrence > web3.utils.toWei("1.8", "ether"));
   });
 
-  it("should empty the players array once the contract picked the winner", async () => {
+  it("should empty the players array and contract money once the contract picked the winner", async () => {
     //players enter
     await lottery.methods
       .enter()
