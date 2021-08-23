@@ -10,7 +10,6 @@ const provider = new HDWalletProvider(
 const web3 = new Web3(provider);
 
 const deploy = async () => {
-  console.log();
   const accounts = await web3.eth.getAccounts();
   // const gasPrice = web3.eth.gasPrice.toNumber() * 1.50;
   console.log(accounts);
@@ -18,10 +17,12 @@ const deploy = async () => {
     .deploy({
       data: bytecode,
     })
-    .send({ gas: "3000000", from: accounts[0] , gasPrice:"100000"});
+    .send({ gas: "3000000", from: accounts[0], gasPrice: "20000000000" });
 
   console.log("interface", interface);
   console.log('deployed at', deployedContract.options.address);
+
+    //deployed at 0xc77B249310511ca16A0b1338fec9983E2Cb70723
 
 };
 
