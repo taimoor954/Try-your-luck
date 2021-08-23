@@ -23,9 +23,9 @@ const deploy = async () => {
   console.log('deployed at', deployedContract.options.address);
 
     //deployed at 0xc77B249310511ca16A0b1338fec9983E2Cb70723
-
-};
+    //confimed at https://rinkeby.etherscan.io/address/0xc77B249310511ca16A0b1338fec9983E2Cb70723#code
+    
+  };
 
 deploy();
 
-//confimed deploymemt of contract on https://rinkeby.etherscan.io/address/0x08F62E8aaFF291A427Af7036e3477c26158B4E19
